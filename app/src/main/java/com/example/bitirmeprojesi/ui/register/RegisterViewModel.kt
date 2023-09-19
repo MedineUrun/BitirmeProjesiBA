@@ -30,6 +30,7 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             var result: Long = -1
             if (!email.isNullOrEmpty() && !userName.isNullOrEmpty() && !password.isNullOrEmpty() && !confirm.isNullOrEmpty()) {
+                if (email.contains("@") && email.contains(".com")) {
                 if (password == confirm) {
                     val existingUser = registerRepository.getUserByUserNameOrEmail(userName, email)
                     if (existingUser == null) {
@@ -54,6 +55,9 @@ class RegisterViewModel @Inject constructor(
                     }
                 } else {
                     _message.emit(RegisterMessageState.PasswordsNotEquals)
+                }
+                } else {
+                    _message.emit((RegisterMessageState.InvalidEmail))
                 }
             } else {
                 _message.emit(RegisterMessageState.Empty)
